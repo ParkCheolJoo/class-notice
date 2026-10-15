@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { notices, rankings } from '../../../lib/data';
-export const preferredRegion='icn1';
 export const dynamic='force-dynamic';
 export async function GET(){
 const url=process.env.NEXT_PUBLIC_SUPABASE_URL;const key=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
