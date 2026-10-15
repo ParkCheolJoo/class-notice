@@ -1,15 +1,29 @@
 # 학급알림장
 
-고등학교 1학년을 위한 주간 대시보드. Next.js App Router, TypeScript, Supabase.
+고등학교 학급의 실제 공지를 전하는 Next.js / Supabase 대시보드입니다.
 
-## 실행
+## 사용
 
-`npm install` → `npm run dev`
+- 학생: 첫 화면에서 게시된 공지와 일정을 확인합니다.
+- 선생님: `/admin`에서 로그인합니다. 첫 로그인에는 임시 비밀번호를 변경합니다.
+- 새 공지를 작성하고 임시 저장 또는 게시합니다. 공지를 수정하거나 휴지통으로 옮길 수 있습니다. 복원은 임시 저장 상태로 돌아갑니다.
+- 개인 할 일은 해당 브라우저에만 저장됩니다.
+- 예시 공지·랭킹은 공개되지 않습니다. 데이터 연결 실패 시 예시를 대신 표시하지 않습니다.
 
-프로덕션 빌드: `npm run build`
+## 개발 및 배포
 
-## 데이터베이스
+`npm install`, `npm run dev`, `npm run build`
 
-Supabase 서울(ap-northeast-2)에 `supabase/schema.sql`을 실행하고 `.env.example`의 두 변수를 설정합니다. 미연결 상태는 예시 학급으로 명확히 표시합니다. 공지는 DB에서 읽으며, 개인 할 일과 공감은 브라우저에 저장됩니다. DB 쓰기는 관리자에게만 허용됩니다.
+환경변수는 `.env.example`을 참고하여 `.env.local`에 설정합니다. 서비스 역할 키는 서버 전용이며 절대 공개하거나 커밋하지 않습니다.
 
-Vercel 서버리스 함수는 `vercel.json`에서 서울(icn1)로 설정됩니다. 실제 지연시간은 배포 후 별도 측정해야 합니다.
+새 DB에서는 `supabase/schema.sql`을 실행합니다. 이전 버전 DB에서는 `supabase/migrations/002_teacher_notices.sql`을 실행합니다. 교사 계정은 Supabase 관리자가 생성하며, 확인된 이메일과 서버 관리 메타데이터 `role: teacher`가 필요합니다. 최초 계정에는 `must_change_password: true`를 설정합니다. 일반 가입자는 공지를 관리할 수 없습니다.
+
+학생에게는 게시 중이며 예시가 아닌 공지만 RLS로 공개합니다. 모든 쓰기는 인증·교사 권한·동일 출처 검증을 통과한 서버 API에서 처리합니다. 동시 수정은 충돌로 알려주며 덮어쓰지 않습니다.
+
+서버는 `vercel.json`의 서울 `icn1`, DB는 서울 `ap-northeast-2`를 사용합니다. 실제 지연시간은 네트워크와 실행 상태에 따라 달라집니다.
+
+## 검증
+
+`node --env-file=.env.local scripts/verify.mjs`
+
+기본 대상은 `http://localhost:3001`입니다. 검증용 계정·공지를 만들고 종료 시 삭제합니다. 실제 DB에 짧게 검증용 공지가 게시되므로 운영 중에는 별도 검증 DB를 권장합니다. `TEST_BASE`로 대상 주소를 지정할 수 있습니다.

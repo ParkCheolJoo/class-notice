@@ -1,18 +1,21 @@
-# 배포 확인 결과
+# 학급알림장 운영 정보
 
 - 서비스: https://class-notice-five.vercel.app
+- 선생님 관리: https://class-notice-five.vercel.app/admin
 - GitHub: https://github.com/ParkCheolJoo/class-notice
-- Vercel 프로젝트: class-notice
-- Supabase: class-notice-seoul (Free), ckkkntnamzlluloqpjoy
-- Vercel 실제 API 실행 리전: icn1
-- Supabase 인프라 리전: ap-northeast-2 (Seoul)
-- 게시물 posts: 6건, 랭킹 rankings: 3건
-- 양쪽 테이블 RLS 활성화, 공개 읽기 정책 각 1개, 익명 쓰기 정책 없음
-- 로컬 npm run build 통과 및 프로덕션 API DB 읽기 확인
-- 브라우저에서 테마 전환, 검색, 필터, 개인 할 일 완료 확인
-- 환경변수 .env.local 동기화, Git 추적 제외, 파일 권한 600
-- 개인 할 일과 공감은 현재 브라우저에만 저장
-- 측정된 두 테이블 조회 시간: 67~133ms. 네트워크 RTT 단독 측정이 아니며 5ms 이하를 보장하지 않음.
+- Vercel: class-notice, 함수 리전 icn1 (서울)
+- Supabase: class-notice-seoul (Free), ckkkntnamzlluloqpjoy, ap-northeast-2 (서울)
 
-게시물 필드: id, title, content, author, created_at, likes, category, tag, day, date
-랭킹 필드: id, nickname, score, played_at
+## 실제 공지 운영
+
+예시 공지 6건은 `is_sample=true`, `status=draft`로 비공개 보관합니다. 예시 랭킹의 공개 읽기 정책도 제거했습니다. 학생에게는 선생님이 게시한 실제 공지만 표시합니다.
+
+교사 로그인, 첫 비밀번호 변경, 작성, 임시 저장, 게시, 수정, 휴지통 및 복원을 제공합니다. 임시 저장과 휴지통은 RLS에서도 비공개입니다. 교사 역할은 서버가 관리하는 Auth app_metadata에서 확인합니다. DB 익명 쓰기는 허용하지 않습니다.
+
+추가 게시물 필드: status, is_sample, notice_date, event_date, pinned, updated_at.
+
+임시 비밀번호 안내는 사용자의 Mac 문서 폴더에만 저장합니다. 비밀 환경변수와 자격증명은 Git에 포함하지 않습니다.
+
+검증: 로컬 프로덕션 빌드, 권한 검사 및 공지 생애주기 API 19개 검증, 브라우저 로그인과 임시 저장 확인.
+
+서울 리전 통일은 지연시간 5ms 이하를 보장하지 않습니다.
